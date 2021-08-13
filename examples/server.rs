@@ -1,10 +1,13 @@
-use better_mosh::{MULTICAST_IPV4, PORT};
-use std::net::{Ipv4Addr, SocketAddrV4};
+use better_mosh::PORT;
+use std::{
+    net::{Ipv4Addr, SocketAddr, SocketAddrV4},
+    time::Duration,
+};
 use tokio::net::UdpSocket;
 
 struct Server {
     socket: UdpSocket,
-    buffer: Vec<u8>,
+    view: Vec<u8>,
 }
 
 impl Server {
@@ -15,20 +18,19 @@ impl Server {
             Some(socket2::Protocol::UDP),
         )?;
         socket.set_reuse_address(true)?;
-        socket.set_multicast_if_v4(&Ipv4Addr::UNSPECIFIED)?;
         socket.bind(&socket2::SockAddr::from(SocketAddrV4::new(
-            Ipv4Addr::UNSPECIFIED,
+            Ipv4Addr::LOCALHOST,
             PORT,
         )))?;
         let std_socket = std::net::UdpSocket::from(socket);
         let socket = UdpSocket::from_std(std_socket)?;
         Ok(Self {
             socket,
-            buffer: Vec::new(),
+            view: Default::default(),
         })
     }
 
-    async fn run(self) -> Result<(), tokio::io::Error> {
+    async fn run(mut self) -> Result<(), tokio::io::Error> {
         println!("Starting server");
         use std::io::Write;
 
@@ -36,20 +38,19 @@ impl Server {
         term.clear_screen().unwrap();
         let mut buf = [0; 1024];
         loop {
-            let n = self.socket.recv(&mut buf).await?;
+            let (n, from) = self.socket.recv_from(&mut buf).await?;
             if n == 0 {
                 return Ok(());
             }
             let message = std::str::from_utf8(&buf[0..n]).expect("invalid UTF-8");
+            self.view.extend(message.as_bytes());
             term.write(message.as_bytes()).unwrap();
-            // self.multicast_buffer().await?;
+            self.send_view(&from).await?;
         }
     }
 
-    async fn multicast_buffer(&self) -> Result<(), tokio::io::Error> {
-        self.socket
-            .send_to(b"hello world", SocketAddrV4::new(MULTICAST_IPV4, PORT))
-            .await?;
+    async fn send_view(&self, to: &SocketAddr) -> Result<(), tokio::io::Error> {
+        self.socket.send_to(self.view.as_slice(), to).await?;
         Ok(())
     }
 }
