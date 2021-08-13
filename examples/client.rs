@@ -1,4 +1,3 @@
-use better_mosh::{MULTICAST_IPV4, PORT};
 use std::io::Write;
 use std::net::{Ipv4Addr, SocketAddrV4};
 use std::sync::Arc;
@@ -65,7 +64,7 @@ async fn read_terminal(
         let character = tokio::task::spawn_blocking(move || term.read_char()).await??;
         character.encode_utf8(&mut characters);
         socket
-            .send_to(&characters, SocketAddrV4::new(Ipv4Addr::LOCALHOST, PORT))
+            .send_to(&characters, SocketAddrV4::new(Ipv4Addr::LOCALHOST, better_mosh::SERVER_LISTEN_PORT))
             .await?;
     }
 }

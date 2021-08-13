@@ -1,8 +1,4 @@
-use better_mosh::PORT;
-use std::{
-    net::{Ipv4Addr, SocketAddr, SocketAddrV4},
-    time::Duration,
-};
+use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use tokio::net::UdpSocket;
 
 struct Server {
@@ -20,7 +16,7 @@ impl Server {
         socket.set_reuse_address(true)?;
         socket.bind(&socket2::SockAddr::from(SocketAddrV4::new(
             Ipv4Addr::LOCALHOST,
-            PORT,
+            better_mosh::SERVER_LISTEN_PORT,
         )))?;
         let std_socket = std::net::UdpSocket::from(socket);
         let socket = UdpSocket::from_std(std_socket)?;
