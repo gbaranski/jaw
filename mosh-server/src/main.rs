@@ -16,7 +16,7 @@ impl Server {
         socket.set_reuse_address(true)?;
         socket.bind(&socket2::SockAddr::from(SocketAddrV4::new(
             Ipv4Addr::LOCALHOST,
-            better_mosh::SERVER_LISTEN_PORT,
+            mosh::SERVER_LISTEN_PORT,
         )))?;
         let std_socket = std::net::UdpSocket::from(socket);
         let socket = UdpSocket::from_std(std_socket)?;

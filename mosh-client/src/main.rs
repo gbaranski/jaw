@@ -66,7 +66,7 @@ async fn read_terminal(
         socket
             .send_to(
                 &characters,
-                SocketAddrV4::new(Ipv4Addr::LOCALHOST, better_mosh::SERVER_LISTEN_PORT),
+                SocketAddrV4::new(Ipv4Addr::LOCALHOST, mosh::SERVER_LISTEN_PORT),
             )
             .await?;
     }
