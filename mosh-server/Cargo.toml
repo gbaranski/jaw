@@ -9,7 +9,7 @@ edition = "2018"
 mosh = { path = "../mosh" }
 console = "0.14.1"
 socket2 = "0.4.1"
-tokio = { version = "1.10.0", features = ["macros", "rt-multi-thread", "net", "time", "io-std", "io-util", "sync"] }
+tokio = { version = "1.10.0", features = ["macros", "rt-multi-thread", "net", "time", "io-std", "io-util", "sync", "process"] }
 uuid = { version = "0.8.2", features = ["v4"] }
 dashmap = "4.0.2"
 thiserror = "1.0.26"

@@ -59,18 +59,20 @@ impl Server {
             ClientFrame::NewSession {} => {
                 let session_id = mosh::session::ID::new_v4();
                 let session = Session::new().await?;
-                self.sessions.insert(session_id, session.clone());
+                // self.sessions.insert(session_id, session.clone());
                 tracing::info!(id = %session_id, "Created new session");
+                tokio::spawn(async move { session.run().await.expect("session error") });
                 Some(ServerFrame::NewSessionAck { session_id })
             }
             ClientFrame::UpdateState { session_id, state } => {
-                let session = self.sessions.get(&session_id).unwrap();
-                let mut session_state = session.state.lock();
-                session_state.extend(state);
-                tracing::info!(id = %session_id, "Updated session state");
-                Some(ServerFrame::UpdateState {
-                    state: session_state.to_vec(),
-                })
+                todo!()
+                // let session = self.sessions.get(&session_id).unwrap();
+                // let mut session_state = session.state.lock();
+                // session_state.extend(state);
+                // tracing::info!(id = %session_id, "Updated session state");
+                // Some(ServerFrame::UpdateState {
+                //     state: session_state.to_vec(),
+                // })
             }
         };
         Ok(frame)
