@@ -10,3 +10,8 @@ mosh = { path = "../mosh" }
 console = "0.14.1"
 socket2 = "0.4.1"
 tokio = { version = "1.10.0", features = ["macros", "rt-multi-thread", "net", "time", "io-std", "io-util"] }
+tracing-subscriber = "0.2.19"
+tracing = "0.1.26"
+thiserror = "1.0.26"
+serde_json = "1.0.66"
+xdg = "2.2.0"
