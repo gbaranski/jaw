@@ -3,11 +3,9 @@ use dashmap::DashMap;
 use mosh::{session::ID, ServerFrame};
 use std::{net::SocketAddr, sync::Arc};
 use tokio::{
-    io::{
-        AsyncBufReadExt, AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt, BufReader, BufWriter,
-    },
+    io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt},
     net::UdpSocket,
-    process::{ChildStderr, ChildStdin, ChildStdout, Command},
+    process::Command,
     sync::mpsc,
 };
 
@@ -17,7 +15,7 @@ pub type Store = DashMap<ID, mpsc::Sender<Vec<u8>>>;
 pub struct Session {
     pub tx: mpsc::Sender<Vec<u8>>,
     rx: mpsc::Receiver<Vec<u8>>,
-    pty: pty::System,
+    pty: pty::Terminal,
     socket: Arc<UdpSocket>,
     address: SocketAddr,
 }
@@ -29,12 +27,12 @@ pub enum Error {
     #[error("IO has been closed")]
     Closed,
     #[error("pty: {0}")]
-    Pty(String),
+    Pty(std::io::Error),
 }
 
 impl Session {
     pub async fn new(socket: Arc<UdpSocket>, address: SocketAddr) -> Result<Self, Error> {
-        let pty = pty::System::new(Command::new("bash"))?;
+        let pty = pty::Terminal::new(Command::new("bash")).map_err(Error::Pty)?;
         let size = pty::Size { col: 80, row: 24 };
         pty.resize(size).unwrap();
         dbg!(&pty);

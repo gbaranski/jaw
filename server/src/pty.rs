@@ -1,13 +1,13 @@
 use std::{
     ffi::{CStr, OsStr},
     fs::File,
-    io::{Read, Write},
+    io::{self, Read, Write},
     os::unix::prelude::{AsRawFd, FromRawFd, OsStrExt},
     pin::Pin,
     task::Poll,
 };
 use tokio::{
-    io::{self, unix::AsyncFd, AsyncRead, AsyncWrite, ReadBuf},
+    io::{unix::AsyncFd, AsyncRead, AsyncWrite, ReadBuf},
     process::{Child, Command},
 };
 
@@ -17,12 +17,12 @@ pub struct Size {
 }
 
 #[derive(Debug)]
-pub struct System {
+pub struct Terminal {
     pub child: Child,
     handle: AsyncFd<File>,
 }
 
-impl System {
+impl Terminal {
     pub fn new(mut command: Command) -> Result<Self, io::Error> {
         let master = Self::master()?;
         let slave = Self::slave(&master)?;
@@ -150,7 +150,7 @@ impl System {
     }
 }
 
-impl AsyncRead for System {
+impl AsyncRead for Terminal {
     fn poll_read(
         self: std::pin::Pin<&mut Self>,
         cx: &mut std::task::Context<'_>,
@@ -176,7 +176,7 @@ impl AsyncRead for System {
     }
 }
 
-impl AsyncWrite for System {
+impl AsyncWrite for Terminal {
     fn poll_write(
         self: Pin<&mut Self>,
         cx: &mut std::task::Context<'_>,
