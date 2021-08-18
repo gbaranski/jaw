@@ -81,7 +81,7 @@ fn get_input<'a>(term: &console::Term, buf: &'a mut [u8]) -> &'a [u8] {
                 Key::Backspace => 0x08,
                 Key::Home => todo!(),
                 Key::End => todo!(),
-                Key::Tab => todo!(),
+                Key::Tab => 0x09,
                 Key::BackTab => todo!(),
                 Key::Del => todo!(),
                 Key::Insert => todo!(),
