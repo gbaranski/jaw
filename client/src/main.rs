@@ -63,16 +63,47 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+fn get_input<'a>(term: &console::Term, buf: &'a mut [u8]) -> &'a [u8] {
+    use console::Key;
+
+    let key = term.read_key().unwrap();
+    match key {
+        Key::Char(char) => {
+            let bytes = char.encode_utf8(buf);
+            bytes.as_bytes()
+        }
+        Key::UnknownEscSeq(_) => unimplemented!(),
+        Key::Unknown => unimplemented!(),
+        key => {
+            let byte = match key {
+                Key::Enter => 0x0A,
+                Key::Escape => todo!(),
+                Key::Backspace => 0x08,
+                Key::Home => todo!(),
+                Key::End => todo!(),
+                Key::Tab => todo!(),
+                Key::BackTab => todo!(),
+                Key::Del => todo!(),
+                Key::Insert => todo!(),
+                Key::PageUp => todo!(),
+                Key::PageDown => todo!(),
+                _ => unreachable!(),
+            };
+            buf[0] = byte;
+            &buf[0..1]
+        }
+    }
+}
+
 async fn read_input(session: Session) -> Result<(), Box<dyn std::error::Error>> {
-    let mut characters = [0; 1];
+    let mut buf = vec![0; 8];
     let term = console::Term::stdout();
     loop {
-        let character = term.read_char().unwrap();
-        character.encode_utf8(&mut characters);
+        let input = get_input(&term, &mut buf);
         session
             .send(ClientFrame::Write {
                 session_id: session.id.clone(),
-                bytes: characters.to_vec(),
+                bytes: input.to_vec(),
             })
             .await?;
     }
