@@ -64,14 +64,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 async fn read_input(session: Session) -> Result<(), Box<dyn std::error::Error>> {
-    use std::io::Write;
     let mut characters = [0; 1];
-    let mut term = console::Term::stdout();
+    let term = console::Term::stdout();
     loop {
-        let term_cloned = term.clone(); // TODO: Remove this clone
-        let character = tokio::task::spawn_blocking(move || term_cloned.read_char()).await??;
+        let character = term.read_char().unwrap();
         character.encode_utf8(&mut characters);
-        term.write(&characters)?;
         session
             .send(ClientFrame::Write {
                 session_id: session.id.clone(),

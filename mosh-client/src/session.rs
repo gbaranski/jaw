@@ -1,5 +1,6 @@
 use mosh::{ClientFrame, ServerFrame};
 use std::{
+    io::Write,
     net::{Ipv4Addr, SocketAddr, SocketAddrV4},
     sync::Arc,
 };
@@ -54,13 +55,13 @@ impl Session {
 
     pub async fn run(&self) -> Result<(), Error> {
         let mut buf = vec![0; 1024];
-        let term = console::Term::stdout();
+        let mut term = console::Term::stdout();
         loop {
             let frame = recv(&self.socket, &mut buf).await?;
             match frame {
                 ServerFrame::UpdateState { state } => {
-                    term.clear_line()?;
-                    term.write_line(std::str::from_utf8(&state).unwrap())?;
+                    term.write(&state)?;
+                    term.flush().unwrap();
                 }
                 _ => todo!(),
             };
