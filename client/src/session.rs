@@ -54,7 +54,8 @@ impl Session {
     }
 
     pub async fn run(&self) -> Result<(), Error> {
-        let mut buf = vec![0; 1024];
+        const BUFFER_SIZE: u16 = 65535;
+        let mut buf = vec![0; BUFFER_SIZE as usize];
         let mut term = console::Term::stdout();
         loop {
             let frame = recv(&self.socket, &mut buf).await?;
