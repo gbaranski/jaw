@@ -19,8 +19,8 @@ pub enum ServerFrame {
 #[serde(tag = "type")]
 pub enum ClientFrame {
     NewSession {},
-    UpdateState {
+    Write {
         session_id: session::ID,
-        state: Vec<u8>,
+        bytes: Vec<u8>,
     },
 }

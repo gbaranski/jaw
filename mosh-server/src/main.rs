@@ -1,8 +1,12 @@
 mod session;
+mod pty;
 
 use mosh::{ClientFrame, ServerFrame, PORT};
 use session::Session;
-use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
+use std::{
+    net::{Ipv4Addr, SocketAddr, SocketAddrV4},
+    sync::Arc,
+};
 use tokio::net::UdpSocket;
 
 #[derive(Debug, thiserror::Error)]
@@ -17,7 +21,7 @@ enum Error {
 
 struct Server {
     sessions: session::Store,
-    socket: UdpSocket,
+    socket: Arc<UdpSocket>,
 }
 
 impl Server {
@@ -25,7 +29,7 @@ impl Server {
         let socket = UdpSocket::bind(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, PORT)).await?;
         Ok(Self {
             sessions: session::Store::default(),
-            socket,
+            socket: Arc::new(socket),
         })
     }
 
@@ -58,21 +62,16 @@ impl Server {
         let frame = match frame {
             ClientFrame::NewSession {} => {
                 let session_id = mosh::session::ID::new_v4();
-                let session = Session::new().await?;
-                // self.sessions.insert(session_id, session.clone());
+                let session = Session::new(self.socket.clone(), from).await?;
+                self.sessions.insert(session_id, session.tx.clone());
                 tracing::info!(id = %session_id, "Created new session");
-                tokio::spawn(async move { session.run().await.expect("session error") });
+                tokio::spawn(async move { session.run().await.expect("session error") }); // TODO: remove session there
                 Some(ServerFrame::NewSessionAck { session_id })
             }
-            ClientFrame::UpdateState { session_id, state } => {
-                todo!()
-                // let session = self.sessions.get(&session_id).unwrap();
-                // let mut session_state = session.state.lock();
-                // session_state.extend(state);
-                // tracing::info!(id = %session_id, "Updated session state");
-                // Some(ServerFrame::UpdateState {
-                //     state: session_state.to_vec(),
-                // })
+            ClientFrame::Write { session_id, bytes } => {
+                let session = self.sessions.get(&session_id).unwrap();
+                session.send(bytes).await.unwrap();
+                None
             }
         };
         Ok(frame)

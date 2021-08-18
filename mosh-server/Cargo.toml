@@ -9,7 +9,7 @@ edition = "2018"
 mosh = { path = "../mosh" }
 console = "0.14.1"
 socket2 = "0.4.1"
-tokio = { version = "1.10.0", features = ["macros", "rt-multi-thread", "net", "time", "io-std", "io-util", "sync", "process"] }
+tokio = { version = "1.10.0", features = ["macros", "rt-multi-thread", "net", "time", "io-std", "io-util", "sync", "process", "fs"] }
 uuid = { version = "0.8.2", features = ["v4"] }
 dashmap = "4.0.2"
 thiserror = "1.0.26"
@@ -21,3 +21,5 @@ tracing-subscriber = "0.2.19"
 tracing = "0.1.26"
 serde_json = "1.0.66"
 serde = { version = "1.0.127", features = ["derive"] }
+async-trait = "0.1.51"
+libc = "0.2.99"
