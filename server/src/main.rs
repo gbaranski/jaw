@@ -1,7 +1,7 @@
 mod session;
 mod pty;
 
-use mosh::{ClientFrame, ServerFrame, PORT};
+use jaw::{ClientFrame, ServerFrame, PORT};
 use session::Session;
 use std::{
     net::{Ipv4Addr, SocketAddr, SocketAddrV4},
@@ -61,7 +61,7 @@ impl Server {
     ) -> Result<Option<ServerFrame>, Error> {
         let frame = match frame {
             ClientFrame::NewSession {} => {
-                let session_id = mosh::session::ID::new_v4();
+                let session_id = jaw::session::ID::new_v4();
                 let session = Session::new(self.socket.clone(), from).await?;
                 self.sessions.insert(session_id, session.tx.clone());
                 tracing::info!(id = %session_id, "Created new session");

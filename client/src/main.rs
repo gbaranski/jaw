@@ -1,6 +1,6 @@
 mod session;
 
-use mosh::ClientFrame;
+use jaw::ClientFrame;
 use session::Session;
 use std::net::{Ipv4Addr, SocketAddrV4};
 
@@ -18,10 +18,10 @@ fn init_logging() {
 
     tracing_subscriber::fmt()
         .with_writer(|| {
-            let log_file_path = xdg::BaseDirectories::with_prefix("mosh-rust")
+            let log_file_path = xdg::BaseDirectories::with_prefix("jaw")
                 .unwrap()
                 .get_cache_home()
-                .join("mosh.log");
+                .join("jaw.log");
             if !log_file_path.exists() {
                 std::fs::create_dir_all(&log_file_path.parent().unwrap()).unwrap();
             }
@@ -41,7 +41,7 @@ fn init_logging() {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     init_logging();
     let session =
-        Session::create(SocketAddrV4::new(Ipv4Addr::LOCALHOST, mosh::PORT).into()).await?;
+        Session::create(SocketAddrV4::new(Ipv4Addr::LOCALHOST, jaw::PORT).into()).await?;
 
     let run_session_task = {
         let session = session.clone();

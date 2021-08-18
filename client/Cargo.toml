@@ -1,12 +1,12 @@
 [package]
-name = "mosh-client"
+name = "jaw-client"
 version = "0.1.0"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-mosh = { path = "../core" }
+jaw = { path = "../core" }
 console = "0.14.1"
 socket2 = "0.4.1"
 tokio = { version = "1.10.0", features = ["macros", "rt-multi-thread", "net", "time", "io-std", "io-util"] }

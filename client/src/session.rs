@@ -1,4 +1,4 @@
-use mosh::{ClientFrame, ServerFrame};
+use jaw::{ClientFrame, ServerFrame};
 use std::{
     io::Write,
     net::{Ipv4Addr, SocketAddr, SocketAddrV4},
@@ -8,7 +8,7 @@ use tokio::net::UdpSocket;
 
 #[derive(Debug, Clone)]
 pub struct Session {
-    pub id: mosh::session::ID,
+    pub id: jaw::session::ID,
     socket: Arc<UdpSocket>,
 }
 

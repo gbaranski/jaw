@@ -1,6 +1,6 @@
 use crate::pty;
 use dashmap::DashMap;
-use mosh::{session::ID, ServerFrame};
+use jaw::{session::ID, ServerFrame};
 use std::{net::SocketAddr, sync::Arc};
 use tokio::{
     io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt},
