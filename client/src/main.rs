@@ -72,7 +72,9 @@ fn get_input<'a>(term: &console::Term, buf: &'a mut [u8]) -> &'a [u8] {
             let bytes = char.encode_utf8(buf);
             bytes.as_bytes()
         }
-        Key::UnknownEscSeq(_) => unimplemented!(),
+        Key::UnknownEscSeq(_) => {
+            &buf[0..1]
+        },
         Key::Unknown => unimplemented!(),
         key => {
             let byte = match key {
