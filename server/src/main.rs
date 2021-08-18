@@ -26,7 +26,7 @@ struct Server {
 
 impl Server {
     pub async fn new() -> Result<Self, Error> {
-        let socket = UdpSocket::bind(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, PORT)).await?;
+        let socket = UdpSocket::bind(SocketAddrV4::new(Ipv4Addr::LOCALHOST, PORT)).await?;
         Ok(Self {
             sessions: session::Store::default(),
             socket: Arc::new(socket),

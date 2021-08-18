@@ -37,7 +37,7 @@ async fn recv(socket: &UdpSocket, buf: &mut [u8]) -> Result<ServerFrame, Error> 
 impl Session {
     #[tracing::instrument]
     pub async fn create(address: SocketAddr) -> Result<Self, Error> {
-        let socket = UdpSocket::bind(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, 0)).await?;
+        let socket = UdpSocket::bind(SocketAddrV4::new(Ipv4Addr::LOCALHOST, 0)).await?;
         socket.connect(address).await?;
         send(&socket, ClientFrame::NewSession {}).await?;
         let mut buf = vec![0; 1024];
