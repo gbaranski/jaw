@@ -30,7 +30,6 @@ impl Terminal {
         command.kill_on_drop(true);
         command.stdin(slave.try_clone().expect("clone stdin error"));
         command.stdout(slave.try_clone().expect("clone stdout error"));
-        // command.stdout(std::process::Stdio::null());
         command.stderr(slave);
 
         unsafe {
@@ -52,9 +51,7 @@ impl Terminal {
             });
         }
 
-        dbg!(&command);
         let child = command.spawn()?;
-        dbg!(&child);
 
         Ok(Self {
             child,

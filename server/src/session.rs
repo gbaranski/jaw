@@ -35,7 +35,6 @@ impl Session {
         let pty = pty::Terminal::new(Command::new("bash")).map_err(Error::Pty)?;
         let size = pty::Size { col: 80, row: 24 };
         pty.resize(size).unwrap();
-        dbg!(&pty);
 
         let (tx, rx) = mpsc::channel(32);
         Ok(Self {
