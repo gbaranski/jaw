@@ -1,6 +1,6 @@
 # Jaw: the remote shell
 
-Jaw is a remote terminal application, that uses UDP as a transport protocol.
+Jaw is a remote shell that uses UDP as a transport protocol.
 
 It is currently just a proof-of-concept, and a result of my play with UDP.
 
