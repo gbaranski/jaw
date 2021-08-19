@@ -10,8 +10,8 @@ pub enum ServerFrame {
     NewSessionAck {
         session_id: session::ID,
     },
-    UpdateState {
-        state: Vec<u8>,
+    Write {
+        bytes: Vec<u8>,
     },
 }
 

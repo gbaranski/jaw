@@ -60,8 +60,8 @@ impl Session {
         loop {
             let frame = recv(&self.socket, &mut buf).await?;
             match frame {
-                ServerFrame::UpdateState { state } => {
-                    term.write(&state)?;
+                ServerFrame::Write { bytes } => {
+                    term.write(&bytes)?;
                     term.flush().unwrap();
                 }
                 _ => todo!(),

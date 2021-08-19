@@ -94,17 +94,17 @@ impl Session {
             if n == 0 {
                 return Err(Error::Closed);
             }
-            let line = &buf[..n];
+            let bytes = &buf[..n];
             socket
                 .send_to(
-                    &serde_json::to_vec(&ServerFrame::UpdateState {
-                        state: line.to_vec(),
+                    &serde_json::to_vec(&ServerFrame::Write {
+                        bytes: bytes.to_vec(),
                     })
                     .unwrap(),
                     address,
                 )
                 .await?;
-            tracing::info!("stdout: {:?}", line);
+            tracing::info!("stdout: {:?}", bytes);
         }
     }
 }
