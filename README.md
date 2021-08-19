@@ -4,9 +4,9 @@ Jaw is a remote terminal application, that uses UDP as a transport protocol.
 
 It is currently just a proof-of-concept, and a result of my play with UDP.
 
-# Session Flow
+# Flow
 
-![Session flow image](./docs/flow.svg)
+![flow image](./docs/flow.svg)
 
 # Features
 
