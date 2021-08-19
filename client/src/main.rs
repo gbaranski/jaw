@@ -40,8 +40,7 @@ fn init_logging() {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     init_logging();
-    let session =
-        Session::create(SocketAddrV4::new(Ipv4Addr::LOCALHOST, jaw::PORT).into()).await?;
+    let session = Session::create(SocketAddrV4::new(Ipv4Addr::LOCALHOST, jaw::PORT).into()).await?;
 
     let run_session_task = {
         let session = session.clone();
@@ -72,9 +71,7 @@ fn get_input<'a>(term: &console::Term, buf: &'a mut [u8]) -> &'a [u8] {
             let bytes = char.encode_utf8(buf);
             bytes.as_bytes()
         }
-        Key::UnknownEscSeq(_) => {
-            &buf[0..1]
-        },
+        Key::UnknownEscSeq(_) => &buf[0..1],
         Key::Unknown => unimplemented!(),
         key => {
             let byte = match key {

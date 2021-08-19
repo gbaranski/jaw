@@ -1,5 +1,5 @@
-mod session;
 mod pty;
+mod session;
 
 use jaw::{ClientFrame, ServerFrame, PORT};
 use session::Session;
